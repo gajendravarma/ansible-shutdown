@@ -1,0 +1,19 @@
+---
+- name: Shutdown Windows servers gracefully
+  hosts: all
+  gather_facts: no
+  become: false
+  vars:
+    shutdown_timeout: 60  # seconds before shutdown
+    shutdown_message: "Server is being shut down via Ansible for maintenance."
+
+  tasks:
+
+    - name: Initiate Windows shutdown
+      win_command: >
+        shutdown /s /t {{ shutdown_timeout }} /c "{{ shutdown_message }}" /f
+      register: shutdown_output
+
+    - name: Display shutdown command output
+      debug:
+        var: shutdown_output.stdout
